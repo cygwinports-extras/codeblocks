@@ -1,0 +1,19 @@
+--- origsrc/codeblocks-8.02/configure.in	2008-02-23 07:49:47.000000000 -0600
++++ src/codeblocks-8.02/configure.in	2008-02-23 07:49:00.000000000 -0600
+@@ -212,7 +212,6 @@ AC_CONFIG_FILES([Makefile
+ 	src/base/tinyxml/Makefile
+ 	src/build_tools/Makefile
+ 	src/build_tools/autorevision/Makefile
+-	src/include/autorevision.h
+ 	src/include/Makefile
+ 	src/include/scripting/Makefile
+ 	src/include/scripting/bindings/Makefile
+--- origsrc/codeblocks-8.02/src/build_tools/autorevision/Makefile.am	2007-03-19 07:30:06.000000000 -0500
++++ src/codeblocks-8.02/src/build_tools/autorevision/Makefile.am	2009-12-16 01:50:04.186776800 -0600
+@@ -5,5 +5,5 @@ INCLUDES = -I$(top_srcdir)/src/include
+ 
+ auto_revision_LDADD = ../../base/tinyxml/libtinyxml.la
+ 
+-all-local: auto_revision
++all-local: auto_revision$(EXEEXT)
+ 	./auto_revision +int +wx +t $(top_srcdir) $(top_srcdir)/src/include/autorevision.h

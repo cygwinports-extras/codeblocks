@@ -1,0 +1,28 @@
+WX_VERSION=2.8
+WX_CODESET=unicode
+inherit wxwidgets
+
+DESCRIPTION="Code::Blocks C++ IDE"
+HOMEPAGE="http://www.codeblocks.org/"
+SRC_URI="mirror://sourceforge/codeblocks/${P}-src.tar.bz2"
+PATCH_URI="
+	mirror://portage/dev-util/${PN}/files/${PV}-version.patch
+	mirror://portage/dev-util/${PN}/files/${P}-gcc43.patch
+	mirror://portage/dev-util/${PN}/files/${P}-gcc44.patch
+	8.02-platform-cygwin.patch
+	8.02-autorevision-build.patch
+	8.02-off64_t.patch
+	8.02-glib-gsocket.patch
+	8.02-byogames-double-free.patch
+"
+
+DIFF_EXCLUDES="autorevision.h"
+
+CXXFLAGS+=" -fno-strict-aliasing"
+
+CYGCONF_ARGS="
+	--disable-static
+	--with-contrib-plugins=all
+	--with-platform=gtk
+	--with-wx-config=${WX_CONFIG}
+"

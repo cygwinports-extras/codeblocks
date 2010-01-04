@@ -1,0 +1,198 @@
+--- origsrc/codeblocks-8.02/acinclude.m4	2008-02-17 14:50:33.000000000 -0600
++++ src/codeblocks-8.02/acinclude.m4	2009-12-16 01:50:04.181776500 -0600
+@@ -36,7 +36,12 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
+ 
+ AC_DEFUN([CODEBLOCKS_SETUP_FOR_TARGET],
+ [case $host in
+-*-*-cygwin* | *-*-mingw*)
++*-*-cygwin*)
++	AC_SUBST(SHARED_FLAGS, "-shared -no-undefined -Xlinker --export-all-symbols")
++	AC_SUBST(PLUGIN_FLAGS, "-shared -no-undefined -avoid-version")
++	linux=true
++;;
++*-*-mingw*)
+ 	AC_SUBST(SHARED_FLAGS, "-shared -no-undefined -Xlinker --export-all-symbols")
+ 	AC_SUBST(PLUGIN_FLAGS, "-shared -no-undefined -avoid-version")
+ 	AC_CHECK_TOOL(RC, windres)
+--- origsrc/codeblocks-8.02/src/include/prep.h	2008-02-27 07:34:34.000000000 -0600
++++ src/codeblocks-8.02/src/include/prep.h	2009-12-17 00:10:45.211740200 -0600
+@@ -139,6 +139,7 @@ namespace platform
+         platform_freebsd,
+         platform_netbsd,
+         platform_openbsd,
++        platform_cygwin,
+         platform_darwin,
+         platform_solaris,
+         platform_macosx
+@@ -163,6 +164,8 @@ namespace platform
+     const identifier id = platform_netbsd;
+     #elif defined ( OPENBSD )    || defined ( __OPENBSD__ )
+     const identifier id = platform_openbsd;
++    #elif defined ( __CYGWIN__ )
++    const identifier id = platform_cygwin;
+     #elif defined ( DARWIN )     || defined ( __APPLE__ )
+     const identifier id = platform_darwin;
+     #elif defined(sun) || defined(__sun)
+@@ -203,9 +206,10 @@ namespace platform
+     const bool freebsd = (id == platform_freebsd);
+     const bool netbsd  = (id == platform_netbsd);
+     const bool openbsd = (id == platform_openbsd);
++    const bool cygwin  = (id == platform_cygwin);
+     const bool darwin  = (id == platform_darwin);
+     const bool solaris = (id == platform_solaris);
+-    const bool unix    = (linux | freebsd | netbsd | openbsd | darwin | solaris);
++    const bool unix    = (linux | freebsd | netbsd | openbsd | cygwin | darwin | solaris);
+ 
+     const int bits = 8*sizeof(void*);
+ 
+--- origsrc/codeblocks-8.02/src/plugins/contrib/wxSmith/Makefile.am	2007-11-07 09:26:51.000000000 -0600
++++ src/codeblocks-8.02/src/plugins/contrib/wxSmith/Makefile.am	2009-12-16 03:14:53.440865500 -0600
+@@ -10,7 +10,7 @@ INCLUDES = $(WX_CXXFLAGS) \
+ 
+ lib_LTLIBRARIES = libwxsmithlib.la
+ 
+-libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
++libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared -no-undefined
+ 
+ libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) \
+ 				../../../sdk/libcodeblocks.la \
+--- origsrc/codeblocks-8.02/src/sdk/Makefile.am	2007-12-28 05:40:20.000000000 -0600
++++ src/codeblocks-8.02/src/sdk/Makefile.am	2009-12-16 01:50:04.191777100 -0600
+@@ -10,7 +10,7 @@ INCLUDES = $(WX_CXXFLAGS) \
+ 
+ lib_LTLIBRARIES = libcodeblocks.la
+ 
+-libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
++libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@ -no-undefined
+ 
+ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
+ 			scripting/bindings/libsqbindings.la \
+--- origsrc/codeblocks-8.02/src/sdk/pluginmanager.cpp	2008-02-27 07:15:26.000000000 -0600
++++ src/codeblocks-8.02/src/sdk/pluginmanager.cpp	2009-12-16 03:46:18.603690600 -0600
+@@ -276,11 +276,11 @@ bool PluginManager::InstallPlugin(const 
+     wxString resourceName = basename + _T(".zip");
+     wxString settingsOnName = basename + _T(".png");
+     wxString settingsOffName = basename + _T("-off.png");
+-    if (!platform::windows && resourceName.StartsWith(_T("lib")))
++    if (!platform::windows && resourceName.StartsWith(_T("cyg")))
+         resourceName.Remove(0, 3);
+-    if (!platform::windows && settingsOnName.StartsWith(_T("lib")))
++    if (!platform::windows && settingsOnName.StartsWith(_T("cyg")))
+         settingsOnName.Remove(0, 3);
+-    if (!platform::windows && settingsOffName.StartsWith(_T("lib")))
++    if (!platform::windows && settingsOffName.StartsWith(_T("cyg")))
+         settingsOffName.Remove(0, 3);
+     wxString pluginFilename = pluginDir + _T('/') + localName;
+ //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + pluginFilename));
+@@ -382,11 +382,11 @@ bool PluginManager::UninstallPlugin(cbPl
+             resourceFilename = fname.GetName() + _T(".zip");
+             settingsOnFilename = fname.GetName() + _T(".png");
+             settingsOffFilename = fname.GetName() + _T("-off.png");
+-            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
++            if (!platform::windows && resourceFilename.StartsWith(_T("cyg")))
+                 resourceFilename.Remove(0, 3);
+-            if (!platform::windows && settingsOnFilename.StartsWith(_T("lib")))
++            if (!platform::windows && settingsOnFilename.StartsWith(_T("cyg")))
+                 settingsOnFilename.Remove(0, 3);
+-            if (!platform::windows && settingsOffFilename.StartsWith(_T("lib")))
++            if (!platform::windows && settingsOffFilename.StartsWith(_T("cyg")))
+                 settingsOffFilename.Remove(0, 3);
+             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+             settingsOnFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOnFilename, sdDataGlobal | sdDataUser);
+@@ -517,14 +517,14 @@ bool PluginManager::ExportPlugin(cbPlugi
+ 
+             // now get the resource zip filename
+             resourceFilename = fname.GetName() + _T(".zip");
+-            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
++            if (!platform::windows && resourceFilename.StartsWith(_T("cyg")))
+                 resourceFilename.Remove(0, 3);
+             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+             sourcefiles.Add(resourceFilename);
+ 
+             // the highlighted icon the plugin may have for its "settings" page
+             resourceFilename = fname.GetName() + _T(".png");
+-            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
++            if (!platform::windows && resourceFilename.StartsWith(_T("cyg")))
+                 resourceFilename.Remove(0, 3);
+             resourceFilename.Prepend(_T("images/settings/"));
+             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+@@ -533,7 +533,7 @@ bool PluginManager::ExportPlugin(cbPlugi
+ 
+             // the non-highlighted icon the plugin may have for its "settings" page
+             resourceFilename = fname.GetName() + _T("-off.png");
+-            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
++            if (!platform::windows && resourceFilename.StartsWith(_T("cyg")))
+                 resourceFilename.Remove(0, 3);
+             resourceFilename.Prepend(_T("images/settings/"));
+             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+@@ -542,7 +542,7 @@ bool PluginManager::ExportPlugin(cbPlugi
+ 
+             // export extra files
+             resourceFilename = fname.GetName() + _T(".zip");
+-            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
++            if (!platform::windows && resourceFilename.StartsWith(_T("cyg")))
+                 resourceFilename.Remove(0, 3);
+             ReadExtraFilesFromManifestFile(resourceFilename, extrafilesdest);
+             for (size_t n = 0; n < extrafilesdest.GetCount(); ++n)
+@@ -730,7 +730,7 @@ bool PluginManager::ReadManifestFile(con
+         wxString actual = fname.GetFullName();
+ 
+         // remove 'lib' prefix from plugin name (if any)
+-        if (!platform::windows && actual.StartsWith(_T("lib")))
++        if (!platform::windows && actual.StartsWith(_T("cyg")))
+             actual.Remove(0, 3);
+ 
+         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+@@ -861,7 +861,7 @@ void PluginManager::ReadExtraFilesFromMa
+     wxString actual = fname.GetFullName();
+ 
+     // remove 'lib' prefix from plugin name (if any)
+-    if (!platform::windows && actual.StartsWith(_T("lib")))
++    if (!platform::windows && actual.StartsWith(_T("cyg")))
+         actual.Remove(0, 3);
+ 
+     actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+@@ -919,7 +919,7 @@ void PluginManager::ReadExtraFilesFromMa
+ 
+ int PluginManager::ScanForPlugins(const wxString& path)
+ {
+-    static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
++    static const wxString PluginsMask = _T("*.dll");
+     int count = 0;
+     if(!wxDirExists(path))
+         return count;
+@@ -937,10 +937,7 @@ int PluginManager::ScanForPlugins(const 
+         if (!bbplugins.GetCount())
+         {
+             // defaults
+-            if(platform::windows)
+-                bbplugins.Add(_T("compiler.dll"));
+-            else
+-                bbplugins.Add(_T("libcompiler.so"));
++            bbplugins.Add(_T("cygcompiler.dll"));
+         }
+     }
+ 
+--- origsrc/codeblocks-8.02/src/src/compilersettingsdlg.cpp	2008-02-27 07:15:26.000000000 -0600
++++ src/codeblocks-8.02/src/src/compilersettingsdlg.cpp	2009-12-16 04:16:48.752369100 -0600
+@@ -66,10 +66,7 @@ CompilerSettingsDlg::CompilerSettingsDlg
+     if (!bbplugins.GetCount())
+     {
+         // defaults
+-        if(platform::windows)
+-            bbplugins.Add(_T("compiler.dll"));
+-        else
+-            bbplugins.Add(_T("libcompiler.so"));
++        bbplugins.Add(_T("cygcompiler.dll"));
+     }
+     wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
+     clb->Clear();
+@@ -256,7 +253,7 @@ void CompilerSettingsDlg::EndModal(int r
+             }
+         }
+ 
+-        const wxString compiler(platform::windows ? _T("compiler.dll") : _T("libcompiler.so"));
++        const wxString compiler(_T("cygcompiler.dll"));
+ 
+         if (bbplugins.Index(compiler) == wxNOT_FOUND)
+         {

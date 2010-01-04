@@ -1,0 +1,11 @@
+--- origsrc/codeblocks-8.02/src/plugins/contrib/codesnippets/memorymappedfile.cpp	2007-05-03 15:03:25.000000000 -0500
++++ src/codeblocks-8.02/src/plugins/contrib/codesnippets/memorymappedfile.cpp	2009-12-16 02:38:29.615957800 -0600
+@@ -218,7 +218,7 @@ wxULongLong wxMemoryMappedFile::GetFileS
+     {
+         return wxULongLong(INVALID_FILE_SIZE);
+     }
+-#elif defined(__BSD__) || defined(__DARWIN__)
++#elif defined(__BSD__) || defined(__DARWIN__) || defined(__CYGWIN__)
+     // Thanks to Tim S for this fix.
+    off_t size = lseek(hFile, 0, SEEK_END);
+    lseek(hFile, 0, SEEK_SET);//go back to the start of the file
