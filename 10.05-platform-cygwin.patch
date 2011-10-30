@@ -1,5 +1,5 @@
---- origsrc/codeblocks-8.02/acinclude.m4	2008-02-17 14:50:33.000000000 -0600
-+++ src/codeblocks-8.02/acinclude.m4	2009-12-16 01:50:04.181776500 -0600
+--- origsrc/codeblocks-10.05-release/acinclude.m4	2011-10-30 08:00:58.113614600 -0500
++++ src/codeblocks-10.05-release/acinclude.m4	2011-10-30 03:01:07.784753400 -0500
 @@ -36,7 +36,12 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
  
  AC_DEFUN([CODEBLOCKS_SETUP_FOR_TARGET],
@@ -14,8 +14,17 @@
  	AC_SUBST(SHARED_FLAGS, "-shared -no-undefined -Xlinker --export-all-symbols")
  	AC_SUBST(PLUGIN_FLAGS, "-shared -no-undefined -avoid-version")
  	AC_CHECK_TOOL(RC, windres)
---- origsrc/codeblocks-8.02/src/include/prep.h	2008-02-27 07:34:34.000000000 -0600
-+++ src/codeblocks-8.02/src/include/prep.h	2009-12-17 00:10:45.211740200 -0600
+--- origsrc/codeblocks-10.05-release/src/build_tools/autorevision/Makefile.am	2011-10-30 08:00:58.160414700 -0500
++++ src/codeblocks-10.05-release/src/build_tools/autorevision/Makefile.am	2011-10-30 03:01:07.000000000 -0500
+@@ -5,5 +5,5 @@ INCLUDES = -I$(top_srcdir)/src/include
+ 
+ auto_revision_LDADD = ../../base/tinyxml/libtinyxml.la
+ 
+-all-local: auto_revision
++all-local: auto_revision$(EXEEXT)
+ 	./auto_revision +int +wx +t $(top_srcdir) $(top_srcdir)/src/include/autorevision.h
+--- origsrc/codeblocks-10.05-release/src/include/prep.h	2011-10-30 08:00:58.176014800 -0500
++++ src/codeblocks-10.05-release/src/include/prep.h	2011-10-30 03:01:07.000000000 -0500
 @@ -139,6 +139,7 @@ namespace platform
          platform_freebsd,
          platform_netbsd,
@@ -45,9 +54,20 @@
  
      const int bits = 8*sizeof(void*);
  
---- origsrc/codeblocks-8.02/src/plugins/contrib/wxSmith/Makefile.am	2007-11-07 09:26:51.000000000 -0600
-+++ src/codeblocks-8.02/src/plugins/contrib/wxSmith/Makefile.am	2009-12-16 03:14:53.440865500 -0600
-@@ -10,7 +10,7 @@ INCLUDES = $(WX_CXXFLAGS) \
+--- origsrc/codeblocks-10.05-release/src/plugins/contrib/MouseSap/Makefile.am	2010-05-22 05:20:19.000000000 -0500
++++ src/codeblocks-10.05-release/src/plugins/contrib/MouseSap/Makefile.am	2011-10-30 04:51:15.471952600 -0500
+@@ -9,7 +9,7 @@ pluginlib_LTLIBRARIES = libMouseSap.la
+ 
+ libMouseSap_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+ 
+-libMouseSap_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
++libMouseSap_la_LIBADD = $(WX_LIBS) $(WX_GTK2_LIBS) ../../../sdk/libcodeblocks.la
+ 
+ libMouseSap_la_SOURCES = MouseSap.cpp
+ 
+--- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmith/Makefile.am	2011-10-30 08:00:58.238414900 -0500
++++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmith/Makefile.am	2011-10-30 03:01:07.000000000 -0500
+@@ -14,7 +14,7 @@ INCLUDES = $(WX_CXXFLAGS) \
  
  lib_LTLIBRARIES = libwxsmithlib.la
  
@@ -56,8 +76,48 @@
  
  libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) \
  				../../../sdk/libcodeblocks.la \
---- origsrc/codeblocks-8.02/src/sdk/Makefile.am	2007-12-28 05:40:20.000000000 -0600
-+++ src/codeblocks-8.02/src/sdk/Makefile.am	2009-12-16 01:50:04.191777100 -0600
+--- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxchart/wxchart-1.0/Makefile.am	2010-05-22 05:17:06.000000000 -0500
++++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxchart/wxchart-1.0/Makefile.am	2011-10-30 04:40:37.925082000 -0500
+@@ -9,7 +9,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
+ 
+ wxsmithcontribitems_LTLIBRARIES = libwxchartctrl.la
+ 
+-libwxchartctrl_la_LDFLAGS = -version-info 0:1:0
++libwxchartctrl_la_LDFLAGS = -version-info 0:1:0 -no-undefined
+ 
+ libwxchartctrl_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxflatnotebook/wxFlatNotebook/Makefile.am	2010-05-22 05:17:34.000000000 -0500
++++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxflatnotebook/wxFlatNotebook/Makefile.am	2011-10-30 04:40:09.782632900 -0500
+@@ -8,7 +8,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
+ 
+ wxsmithcontribitems_LTLIBRARIES = libwxflatnotebook.la
+ 
+-libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0
++libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0 -no-undefined
+ 
+ libwxflatnotebook_la_LIBADD = $(WX_LIBS)
+ 
+@@ -35,4 +35,4 @@ noinst_HEADERS = \
+ ./include/wx/wxFlatNotebook/fnb_customize_dlg.h \
+ ./include/wx/wxFlatNotebook/fnb_resources.h \
+ ./include/wx/wxFlatNotebook/popup_dlg.h \
+-./include/wx/wxFlatNotebook/xh_fnb.h
+\ No newline at end of file
++./include/wx/wxFlatNotebook/xh_fnb.h
+--- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/Makefile.am	2010-05-22 05:18:32.000000000 -0500
++++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/Makefile.am	2011-10-30 04:40:55.537512700 -0500
+@@ -8,7 +8,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
+ 
+ wxsmithcontribitems_LTLIBRARIES = libwxcustombutton.la
+ 
+-libwxcustombutton_la_LDFLAGS = -version-info 0:1:0
++libwxcustombutton_la_LDFLAGS = -version-info 0:1:0 -no-undefined
+ 
+ libwxcustombutton_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-10.05-release/src/sdk/Makefile.am	2011-10-30 08:00:58.285214900 -0500
++++ src/codeblocks-10.05-release/src/sdk/Makefile.am	2011-10-30 03:01:07.000000000 -0500
 @@ -10,7 +10,7 @@ INCLUDES = $(WX_CXXFLAGS) \
  
  lib_LTLIBRARIES = libcodeblocks.la
@@ -67,9 +127,9 @@
  
  libcodeblocks_la_LIBADD =  $(WX_LIBS) \
  			scripting/bindings/libsqbindings.la \
---- origsrc/codeblocks-8.02/src/sdk/pluginmanager.cpp	2008-02-27 07:15:26.000000000 -0600
-+++ src/codeblocks-8.02/src/sdk/pluginmanager.cpp	2009-12-16 03:46:18.603690600 -0600
-@@ -276,11 +276,11 @@ bool PluginManager::InstallPlugin(const 
+--- origsrc/codeblocks-10.05-release/src/sdk/pluginmanager.cpp	2011-10-30 08:00:58.300815000 -0500
++++ src/codeblocks-10.05-release/src/sdk/pluginmanager.cpp	2011-10-30 03:01:07.000000000 -0500
+@@ -276,11 +276,11 @@ bool PluginManager::InstallPlugin(const
      wxString resourceName = basename + _T(".zip");
      wxString settingsOnName = basename + _T(".png");
      wxString settingsOffName = basename + _T("-off.png");
@@ -143,7 +203,7 @@
              actual.Remove(0, 3);
  
          actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
-@@ -861,7 +861,7 @@ void PluginManager::ReadExtraFilesFromMa
+@@ -870,7 +870,7 @@ void PluginManager::ReadExtraFilesFromMa
      wxString actual = fname.GetFullName();
  
      // remove 'lib' prefix from plugin name (if any)
@@ -152,7 +212,7 @@
          actual.Remove(0, 3);
  
      actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
-@@ -919,7 +919,7 @@ void PluginManager::ReadExtraFilesFromMa
+@@ -928,7 +928,7 @@ void PluginManager::ReadExtraFilesFromMa
  
  int PluginManager::ScanForPlugins(const wxString& path)
  {
@@ -161,7 +221,7 @@
      int count = 0;
      if(!wxDirExists(path))
          return count;
-@@ -937,10 +937,7 @@ int PluginManager::ScanForPlugins(const 
+@@ -946,10 +946,7 @@ int PluginManager::ScanForPlugins(const
          if (!bbplugins.GetCount())
          {
              // defaults
@@ -173,8 +233,8 @@
          }
      }
  
---- origsrc/codeblocks-8.02/src/src/compilersettingsdlg.cpp	2008-02-27 07:15:26.000000000 -0600
-+++ src/codeblocks-8.02/src/src/compilersettingsdlg.cpp	2009-12-16 04:16:48.752369100 -0600
+--- origsrc/codeblocks-10.05-release/src/src/compilersettingsdlg.cpp	2011-10-30 08:00:58.347615100 -0500
++++ src/codeblocks-10.05-release/src/src/compilersettingsdlg.cpp	2011-10-30 03:01:07.000000000 -0500
 @@ -66,10 +66,7 @@ CompilerSettingsDlg::CompilerSettingsDlg
      if (!bbplugins.GetCount())
      {
@@ -187,7 +247,7 @@
      }
      wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
      clb->Clear();
-@@ -256,7 +253,7 @@ void CompilerSettingsDlg::EndModal(int r
+@@ -261,7 +258,7 @@ void CompilerSettingsDlg::EndModal(int r
              }
          }
  

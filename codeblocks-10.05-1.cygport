@@ -1,0 +1,21 @@
+WX_VERSION=2.8
+WX_CODESET=unicode
+inherit wxwidgets
+
+DESCRIPTION="Code::Blocks C++ IDE"
+HOMEPAGE="http://www.codeblocks.org/"
+SRC_URI="mirror://berlios/codeblocks/${P}-src.tar.bz2"
+SRC_DIR="${P}-release"
+
+PATCH_URI="10.05-platform-cygwin.patch"
+
+DIFF_EXCLUDES="autorevision.h"
+
+CXXFLAGS+=" -fno-strict-aliasing"
+
+CYGCONF_ARGS="
+	--disable-static
+	--with-contrib-plugins=all
+	--with-platform=gtk
+	--with-wx-config=${WX_CONFIG}
+"
