@@ -1,5 +1,5 @@
---- origsrc/codeblocks-10.05-release/acinclude.m4	2011-10-30 08:00:58.113614600 -0500
-+++ src/codeblocks-10.05-release/acinclude.m4	2011-10-30 03:01:07.784753400 -0500
+--- origsrc/codeblocks-12.11release8629/acinclude.m4	2013-10-09 19:19:13.079323400 -0500
++++ src/codeblocks-12.11release8629/acinclude.m4	2013-10-09 14:06:00.000000000 -0500
 @@ -36,7 +36,12 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
  
  AC_DEFUN([CODEBLOCKS_SETUP_FOR_TARGET],
@@ -14,18 +14,18 @@
  	AC_SUBST(SHARED_FLAGS, "-shared -no-undefined -Xlinker --export-all-symbols")
  	AC_SUBST(PLUGIN_FLAGS, "-shared -no-undefined -avoid-version")
  	AC_CHECK_TOOL(RC, windres)
---- origsrc/codeblocks-10.05-release/src/build_tools/autorevision/Makefile.am	2011-10-30 08:00:58.160414700 -0500
-+++ src/codeblocks-10.05-release/src/build_tools/autorevision/Makefile.am	2011-10-30 03:01:07.000000000 -0500
+--- origsrc/codeblocks-12.11release8629/src/build_tools/autorevision/Makefile.am	2013-10-09 19:19:13.083323600 -0500
++++ src/codeblocks-12.11release8629/src/build_tools/autorevision/Makefile.am	2013-10-09 14:06:00.000000000 -0500
 @@ -5,5 +5,5 @@ INCLUDES = -I$(top_srcdir)/src/include
  
  auto_revision_LDADD = ../../base/tinyxml/libtinyxml.la
  
 -all-local: auto_revision
 +all-local: auto_revision$(EXEEXT)
- 	./auto_revision +int +wx +t $(top_srcdir) $(top_srcdir)/src/include/autorevision.h
---- origsrc/codeblocks-10.05-release/src/include/prep.h	2011-10-30 08:00:58.176014800 -0500
-+++ src/codeblocks-10.05-release/src/include/prep.h	2011-10-30 03:01:07.000000000 -0500
-@@ -139,6 +139,7 @@ namespace platform
+ 	./auto_revision +int +wx +t $(top_srcdir) $(top_builddir)/src/include/autorevision.h
+--- origsrc/codeblocks-12.11release8629/src/include/prep.h	2013-10-09 19:19:13.086323800 -0500
++++ src/codeblocks-12.11release8629/src/include/prep.h	2013-10-09 14:06:00.000000000 -0500
+@@ -158,6 +158,7 @@ namespace platform
          platform_freebsd,
          platform_netbsd,
          platform_openbsd,
@@ -33,7 +33,7 @@
          platform_darwin,
          platform_solaris,
          platform_macosx
-@@ -163,6 +164,8 @@ namespace platform
+@@ -182,6 +183,8 @@ namespace platform
      const identifier id = platform_netbsd;
      #elif defined ( OPENBSD )    || defined ( __OPENBSD__ )
      const identifier id = platform_openbsd;
@@ -42,7 +42,7 @@
      #elif defined ( DARWIN )     || defined ( __APPLE__ )
      const identifier id = platform_darwin;
      #elif defined(sun) || defined(__sun)
-@@ -203,9 +206,10 @@ namespace platform
+@@ -222,9 +225,10 @@ namespace platform
      const bool freebsd = (id == platform_freebsd);
      const bool netbsd  = (id == platform_netbsd);
      const bool openbsd = (id == platform_openbsd);
@@ -54,8 +54,8 @@
  
      const int bits = 8*sizeof(void*);
  
---- origsrc/codeblocks-10.05-release/src/plugins/contrib/MouseSap/Makefile.am	2010-05-22 05:20:19.000000000 -0500
-+++ src/codeblocks-10.05-release/src/plugins/contrib/MouseSap/Makefile.am	2011-10-30 04:51:15.471952600 -0500
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/MouseSap/Makefile.am	2013-10-09 19:19:13.091324100 -0500
++++ src/codeblocks-12.11release8629/src/plugins/contrib/MouseSap/Makefile.am	2013-10-09 14:06:00.000000000 -0500
 @@ -9,7 +9,7 @@ pluginlib_LTLIBRARIES = libMouseSap.la
  
  libMouseSap_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
@@ -65,60 +65,136 @@
  
  libMouseSap_la_SOURCES = MouseSap.cpp
  
---- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmith/Makefile.am	2011-10-30 08:00:58.238414900 -0500
-+++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmith/Makefile.am	2011-10-30 03:01:07.000000000 -0500
-@@ -14,7 +14,7 @@ INCLUDES = $(WX_CXXFLAGS) \
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/SmartIndent/manifest.xml	1969-12-31 18:00:00.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/SmartIndent/manifest.xml	2013-10-09 15:38:32.735019000 -0500
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
++<CodeBlocks_plugin_manifest_file>
++    <SdkVersion major="1" minor="11" release="12" />
++    <Plugin name="SmartIndentXML">
++        <Value title="SmartIndentXML" />
++        <Value version="0.1" />
++        <Value description="Provides Smart indenting for XML and HTML" />
++        <Value author="Alpha" />
++        <Value authorEmail="" />
++        <Value authorWebsite="" />
++        <Value thanksTo="" />
++        <Value license="GPL" />
++    </Plugin>
++</CodeBlocks_plugin_manifest_file>
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/source_exporter/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/source_exporter/Makefile.am	2013-10-09 15:36:21.216496600 -0500
+@@ -15,7 +15,7 @@ libexporter_la_CPPFLAGS = -DwxPDF_USE_WX
+ libexporter_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+ 
+ libexporter_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
+-				wxPdfDocument/libwxPdfDocument.la
++				wxPdfDocument/libwxPdfDocument.la -lfontconfig
+ 
+ libexporter_la_SOURCES = BaseExporter.cpp \
+ 				exporter.cpp \
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/KWIC/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/KWIC/Makefile.am	2013-10-09 16:15:09.994695100 -0500
+@@ -7,7 +7,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxkwic.la
+ 
+-libwxkwic_la_LDFLAGS = -version-info 0:1:0
++libwxkwic_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxkwic_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile.am	2013-10-09 16:15:10.007695800 -0500
+@@ -5,7 +5,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxflatnotebook.la
+ 
+-libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0
++libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxflatnotebook_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxImagePanel/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxImagePanel/Makefile.am	2013-10-09 16:15:10.018696500 -0500
+@@ -5,7 +5,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwximagepanel.la
+ 
+-libwximagepanel_la_LDFLAGS = -version-info 0:1:0
++libwximagepanel_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwximagepanel_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile.am	2013-10-09 16:15:10.029697100 -0500
+@@ -5,7 +5,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxspeedbutton.la
+ 
+-libwxspeedbutton_la_LDFLAGS = -version-info 0:1:0
++libwxspeedbutton_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxspeedbutton_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxTreeList/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxTreeList/Makefile.am	2013-10-09 16:15:10.042697800 -0500
+@@ -5,7 +5,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxtreelist.la
+ 
+-libwxtreelist_la_LDFLAGS = -version-info 0:1:0
++libwxtreelist_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxtreelist_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxchart/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxchart/Makefile.am	2013-10-09 16:15:10.055698600 -0500
+@@ -6,7 +6,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxchartctrl.la
+ 
+-libwxchartctrl_la_LDFLAGS = -version-info 0:1:0
++libwxchartctrl_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxchartctrl_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxled/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxled/Makefile.am	2013-10-09 16:15:10.068699300 -0500
+@@ -10,7 +10,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxled.la
+ 
+-libwxled_la_LDFLAGS = -version-info 0:1:0
++libwxled_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxled_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxthings/Makefile.am	2012-11-09 08:47:06.000000000 -0600
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxContribItems/wxthings/Makefile.am	2013-10-09 16:15:10.080700000 -0500
+@@ -5,7 +5,7 @@ wxcontribitemsdir=$(libdir)/codeblocks/w
+ 
+ wxcontribitems_LTLIBRARIES = libwxcustombutton.la
+ 
+-libwxcustombutton_la_LDFLAGS = -version-info 0:1:0
++libwxcustombutton_la_LDFLAGS = -version-info 0:1:0 -release $(PACKAGE) -no-undefined
+ 
+ libwxcustombutton_la_LIBADD = $(WX_LIBS)
+ 
+--- origsrc/codeblocks-12.11release8629/src/plugins/contrib/wxSmith/Makefile.am	2013-10-09 19:19:13.094324300 -0500
++++ src/codeblocks-12.11release8629/src/plugins/contrib/wxSmith/Makefile.am	2013-10-09 14:06:00.000000000 -0500
+@@ -12,7 +12,7 @@ INCLUDES = $(WX_CXXFLAGS) \
  
  lib_LTLIBRARIES = libwxsmithlib.la
  
 -libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
-+libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared -no-undefined
++libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared -release $(PACKAGE) -no-undefined
  
  libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) \
  				../../../sdk/libcodeblocks.la \
---- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxchart/wxchart-1.0/Makefile.am	2010-05-22 05:17:06.000000000 -0500
-+++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxchart/wxchart-1.0/Makefile.am	2011-10-30 04:40:37.925082000 -0500
-@@ -9,7 +9,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
- 
- wxsmithcontribitems_LTLIBRARIES = libwxchartctrl.la
- 
--libwxchartctrl_la_LDFLAGS = -version-info 0:1:0
-+libwxchartctrl_la_LDFLAGS = -version-info 0:1:0 -no-undefined
- 
- libwxchartctrl_la_LIBADD = $(WX_LIBS)
- 
---- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxflatnotebook/wxFlatNotebook/Makefile.am	2010-05-22 05:17:34.000000000 -0500
-+++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxflatnotebook/wxFlatNotebook/Makefile.am	2011-10-30 04:40:09.782632900 -0500
-@@ -8,7 +8,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
- 
- wxsmithcontribitems_LTLIBRARIES = libwxflatnotebook.la
- 
--libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0
-+libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0 -no-undefined
- 
- libwxflatnotebook_la_LIBADD = $(WX_LIBS)
- 
-@@ -35,4 +35,4 @@ noinst_HEADERS = \
- ./include/wx/wxFlatNotebook/fnb_customize_dlg.h \
- ./include/wx/wxFlatNotebook/fnb_resources.h \
- ./include/wx/wxFlatNotebook/popup_dlg.h \
--./include/wx/wxFlatNotebook/xh_fnb.h
-\ No newline at end of file
-+./include/wx/wxFlatNotebook/xh_fnb.h
---- origsrc/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/Makefile.am	2010-05-22 05:18:32.000000000 -0500
-+++ src/codeblocks-10.05-release/src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/Makefile.am	2011-10-30 04:40:55.537512700 -0500
-@@ -8,7 +8,7 @@ wxsmithcontribitemsdir=$(libdir)/wxSmith
- 
- wxsmithcontribitems_LTLIBRARIES = libwxcustombutton.la
- 
--libwxcustombutton_la_LDFLAGS = -version-info 0:1:0
-+libwxcustombutton_la_LDFLAGS = -version-info 0:1:0 -no-undefined
- 
- libwxcustombutton_la_LIBADD = $(WX_LIBS)
- 
---- origsrc/codeblocks-10.05-release/src/sdk/Makefile.am	2011-10-30 08:00:58.285214900 -0500
-+++ src/codeblocks-10.05-release/src/sdk/Makefile.am	2011-10-30 03:01:07.000000000 -0500
-@@ -10,7 +10,7 @@ INCLUDES = $(WX_CXXFLAGS) \
+--- origsrc/codeblocks-12.11release8629/src/sdk/Makefile.am	2013-10-09 19:19:13.100324600 -0500
++++ src/codeblocks-12.11release8629/src/sdk/Makefile.am	2013-10-09 14:06:00.000000000 -0500
+@@ -12,7 +12,7 @@ INCLUDES = $(WX_CXXFLAGS) \
  
  lib_LTLIBRARIES = libcodeblocks.la
  
@@ -127,8 +203,8 @@
  
  libcodeblocks_la_LIBADD =  $(WX_LIBS) \
  			scripting/bindings/libsqbindings.la \
---- origsrc/codeblocks-10.05-release/src/sdk/pluginmanager.cpp	2011-10-30 08:00:58.300815000 -0500
-+++ src/codeblocks-10.05-release/src/sdk/pluginmanager.cpp	2011-10-30 03:01:07.000000000 -0500
+--- origsrc/codeblocks-12.11release8629/src/sdk/pluginmanager.cpp	2013-10-09 19:19:13.106324900 -0500
++++ src/codeblocks-12.11release8629/src/sdk/pluginmanager.cpp	2013-10-09 14:06:00.000000000 -0500
 @@ -276,11 +276,11 @@ bool PluginManager::InstallPlugin(const
      wxString resourceName = basename + _T(".zip");
      wxString settingsOnName = basename + _T(".png");
@@ -233,8 +309,8 @@
          }
      }
  
---- origsrc/codeblocks-10.05-release/src/src/compilersettingsdlg.cpp	2011-10-30 08:00:58.347615100 -0500
-+++ src/codeblocks-10.05-release/src/src/compilersettingsdlg.cpp	2011-10-30 03:01:07.000000000 -0500
+--- origsrc/codeblocks-12.11release8629/src/src/compilersettingsdlg.cpp	2013-10-09 19:19:13.109325100 -0500
++++ src/codeblocks-12.11release8629/src/src/compilersettingsdlg.cpp	2013-10-09 14:06:00.000000000 -0500
 @@ -66,10 +66,7 @@ CompilerSettingsDlg::CompilerSettingsDlg
      if (!bbplugins.GetCount())
      {
@@ -247,7 +323,7 @@
      }
      wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
      clb->Clear();
-@@ -261,7 +258,7 @@ void CompilerSettingsDlg::EndModal(int r
+@@ -241,7 +238,7 @@ void CompilerSettingsDlg::EndModal(int r
              }
          }
  

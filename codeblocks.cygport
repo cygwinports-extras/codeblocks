@@ -1,0 +1,29 @@
+WX_VERSION=2.8
+WX_CODESET=unicode
+inherit wxwidgets
+
+NAME="codeblocks"
+VERSION=12.11
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="Code::Blocks C++ IDE"
+DESCRIPTION="Code::Blocks is a free C++ IDE built to meet the most demanding
+needs of its users. It is designed to be very extensible and fully configurable.
+Built around a plugin framework, Code::Blocks can be extended with plugins.
+Any kind of functionality can be added by installing/coding a plugin. For
+instance, compiling and debugging functionality is already provided by plugins."
+HOMEPAGE="http://www.codeblocks.org/"
+SRC_URI="mirror://sourceforge/codeblocks/${NAME}_${VERSION}-1.tar.gz"
+SRC_DIR="${NAME}-${VERSION}release8629"
+PATCH_URI="12.11-platform-cygwin.patch"
+
+DIFF_EXCLUDES="autorevision.h"
+
+CXXFLAGS+=" -fno-strict-aliasing"
+
+CYGCONF_ARGS="
+	--with-contrib-plugins=all
+	--with-platform=gtk
+	--with-wx-config=${WX_CONFIG}
+	--disable-xpmanifest
+"
